@@ -1,4 +1,4 @@
-# String.Interpolate
+# String.Interpolate [![Build Status](https://travis-ci.org/hugobastas/elm-string-interpolate.svg?branch=master)](https://travis-ci.org/hugobastas/elm-string-interpolate)
 
 Put values in your strings, this is a more readable alternative to string concatenation.
 
