@@ -1,9 +1,9 @@
-# String.Interpolate [![Build Status](https://travis-ci.org/hugobastas/elm-string-interpolate.svg?branch=master)](https://travis-ci.org/hugobastas/elm-string-interpolate)
+# String.Template [![Build Status](https://travis-ci.org/hugobastas/elm-string-interpolate.svg?branch=master)](https://travis-ci.org/hugobastas/elm-string-interpolate)
 
 Put values in your strings, this is a more readable alternative to string concatenation.
 
 ```elm
-import String.Interpolate
+import String.Template
 
 
 -- Can be hard to understand
@@ -16,7 +16,7 @@ greet1 { name, notifications } =
 greet2 : { name : String, notifications : Int } -> String
 greet2 { name, notifications } =
     "Hey ${name}. You have ${notifications} new notifications."
-        |> String.Interpolate.interpolate
+        |> String.Template.render
             [ ( "name", name )
             , ( "notifications", String.fromInt notifications )
             ]
@@ -25,19 +25,19 @@ greet2 { name, notifications } =
 
 ## Caveats
 
-While a function like `interpolate` can make code more
+While a function like `String.Template.render` can make code more
 readable than normal concatenation it is not as safe. For instance, if your template or keys happen to have a typo in them you won't get any help from the compiler!
 
 ```elm
 "Hello ${naem}!"
-    |> interpolate [ ( "name", "Alice" ) ]
+    |> String.Template.render [ ( "name", "Alice" ) ]
 
 -- We expect: "Hello Alice!"
 -- We get:    "Hello ${naem}!"
 ```
 
 Be mindful of this!
-[review-string-interpolate](https://package.elm-lang.org/packages/hugobastas/review-string-interpolate/latest)
+[review-string-template](https://package.elm-lang.org/packages/hugobastas/review-string-template/latest)
 together with [elm-review](https://github.com/jfmengels/elm-review)
 ensures that you wont have any problems like that. It might be worth checking it out!
 
@@ -56,12 +56,12 @@ first place).
 But here is why I chose to make my own package instead of using one of the other
 two:
 
-* [lukewestby/elm-string-interpolate](https://package.elm-lang.org/packages/lukewestby/elm-string-interpolate/latest/) 
+* [elm-string-interpolate](https://package.elm-lang.org/packages/lukewestby/elm-string-interpolate/latest/) 
 has no way to give the placeholders in your tamplete descriptive names.
 Your template would look like this: `"Hello {0} {1}!"` instead of:
 `"Hello ${firstName} ${lastName}!"`.
 
-* [jorgengranseth/elm-string-format](https://package.elm-lang.org/packages/jorgengranseth/elm-string-format/latest/)
+* [elm-string-format](https://package.elm-lang.org/packages/jorgengranseth/elm-string-format/latest/)
 is pretty nice, it has named placeholders.
 The only thing it doesn't have is an `elm-review` rule removing
 the risk of typos etc. If you interpolate very large strings with many placeholders

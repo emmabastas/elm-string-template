@@ -1,11 +1,11 @@
 {
     "type": "package",
-    "name": "hugobastas/elm-string-safe-interpolate",
+    "name": "hugobastas/elm-string-template",
     "summary": "Inject Elm values into a string template",
     "license": "MIT",
     "version": "1.0.0",
     "exposed-modules": [
-        "String.Interpolate"
+        "String.Template"
     ],
     "elm-version": "0.19.1 <= v < 0.20.0",
     "dependencies": {
