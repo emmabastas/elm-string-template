@@ -1,4 +1,4 @@
-module String.Template exposing (render)
+module String.Template exposing (Error, render, renderSafe)
 
 import Dict
 import Regex exposing (Regex)
@@ -16,27 +16,76 @@ import Regex exposing (Regex)
 
 -}
 render : List ( String, String ) -> String -> String
-render replacements template =
+render substitutions template =
     let
         dict =
-            Dict.fromList replacements
+            Dict.fromList substitutions
     in
     template
         |> Regex.replace regex
             (\{ match } ->
                 let
                     placeholderName =
-                        match
-                            |> String.dropLeft 2
-                            |> String.dropRight 1
-                            |> String.toList
-                            |> dropWhile ((==) ' ')
-                            |> dropWhileRight ((==) ' ')
-                            |> String.fromList
+                        placeholderNameFromPlaceholder match
                 in
                 Dict.get placeholderName dict
                     |> Maybe.withDefault match
             )
+
+
+{-| Sometimes injecting values with `render` can go wrong. Then it's nice to have
+this safe alternative
+-}
+renderSafe : List ( String, String ) -> String -> Result (List Error) String
+renderSafe substitutions template =
+    let
+        dict =
+            Dict.fromList substitutions
+    in
+    template
+        |> Regex.find regex
+        |> List.foldl
+            (\{ match, index } ( errors, s ) ->
+                let
+                    placeholderName =
+                        placeholderNameFromPlaceholder match
+
+                    startIndex =
+                        index
+
+                    endIndex =
+                        index + String.length match
+                in
+                case Dict.get placeholderName dict of
+                    Just substitution ->
+                        ( errors
+                        , replaceSlice substitution startIndex endIndex s
+                        )
+
+                    Nothing ->
+                        ( { placeholderName = placeholderName
+                          , placeholderRange = ( startIndex, endIndex )
+                          }
+                            :: errors
+                        , s
+                        )
+            )
+            ( [], template )
+        |> (\( errors, renderedTemplate ) ->
+                if List.length errors == 0 then
+                    Ok renderedTemplate
+
+                else
+                    Err errors
+           )
+
+
+{-| When a placeholder lacks a substitution it is recorded as an error
+-}
+type alias Error =
+    { placeholderName : String
+    , placeholderRange : ( Int, Int )
+    }
 
 
 regex : Regex
@@ -45,8 +94,24 @@ regex =
         |> Maybe.withDefault Regex.never
 
 
+placeholderNameFromPlaceholder : String -> String
+placeholderNameFromPlaceholder placeholder =
+    placeholder
+        |> String.dropLeft 2
+        |> String.dropRight 1
+        |> String.toList
+        |> dropWhile ((==) ' ')
+        |> dropWhileRight ((==) ' ')
+        |> String.fromList
 
--- dropwWhile and dropWhileRight taken from elm-community/list-extra
+
+
+-- replaceSlice, dropwWhile and dropWhileRight taken from elm-community/list-extra
+
+
+replaceSlice : String -> Int -> Int -> String -> String
+replaceSlice substitution start end string =
+    String.slice 0 start string ++ substitution ++ String.slice end (String.length string) string
 
 
 dropWhile : (a -> Bool) -> List a -> List a
