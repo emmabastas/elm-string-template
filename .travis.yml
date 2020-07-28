@@ -10,5 +10,5 @@ elm-format: "0.8.2"
 install: ":"
 
 script:
-  - elm-format --validate
+  - elm-format src/ --validate
   - elm-test
