@@ -1,4 +1,13 @@
-module String.Template exposing (Error, render, renderSafe)
+module String.Template exposing (inject, injectSafe, Error)
+
+{-| There's two functions to inject values into a string. `inject` and `injectSafe`.
+
+  - `inject` is meant for a static template and key-value pairs.
+  - `injectingSafe` can be used with dynamic data where some placeholders might miss values to inject. In that case an `Error` will be returned detailing the problem.
+
+@docs inject, injectSafe, Error
+
+-}
 
 import Dict
 import Regex exposing (Regex)
@@ -7,7 +16,7 @@ import Regex exposing (Regex)
 {-| Inject values into a template string with the given key-value pairs.
 
     "Good day ${title} ${lastName}!"
-        |> String.Template.render
+        |> String.Template.inject
             [ ( "title", "dr." )
             , ( "lastName", "Who" )
             ]
@@ -15,8 +24,8 @@ import Regex exposing (Regex)
     -- "Good day dr. Who!"
 
 -}
-render : List ( String, String ) -> String -> String
-render substitutions template =
+inject : List ( String, String ) -> String -> String
+inject substitutions template =
     let
         dict =
             Dict.fromList substitutions
@@ -33,11 +42,18 @@ render substitutions template =
             )
 
 
-{-| Sometimes injecting values with `render` can go wrong. Then it's nice to have
-this safe alternative
+{-| Inject values into a string with the given key-value pairs. This function checks that each placeholder has been replaced with a value and is thus suitable for cases where the template and/or key-vaue pairs are dynamic.
+
+    "Good day ${title} ${lastName}!"
+        |> String.Template.injectSafe
+            [ ( "title", "dr.")
+            ] -- We forgot "lastName"
+
+    -- Err [ { placeholderName = "lastName", placeholderRange = (18, 29) } ]
+
 -}
-renderSafe : List ( String, String ) -> String -> Result (List Error) String
-renderSafe substitutions template =
+injectSafe : List ( String, String ) -> String -> Result (List Error) String
+injectSafe substitutions template =
     let
         dict =
             Dict.fromList substitutions
@@ -80,7 +96,7 @@ renderSafe substitutions template =
            )
 
 
-{-| When a placeholder lacks a substitution it is recorded as an error
+{-| The error returned by `injectingSafe`.
 -}
 type alias Error =
     { placeholderName : String
