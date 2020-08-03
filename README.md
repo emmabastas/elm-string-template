@@ -1,4 +1,4 @@
-# String.Template [![Build Status](https://travis-ci.org/hugobastas/elm-string-template.svg?branch=master)](https://travis-ci.org/hugobastas/elm-string-template)
+# String.Template [![Build Status](https://travis-ci.org/emmabastas/elm-string-template.svg?branch=master)](https://travis-ci.org/emmabastas/elm-string-template)
 Put values into template strings. Avoid unreadable string concatenation.
 
 ```elm
