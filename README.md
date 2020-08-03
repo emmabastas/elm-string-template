@@ -1,23 +1,23 @@
 # String.Template [![Build Status](https://travis-ci.org/hugobastas/elm-string-template.svg?branch=master)](https://travis-ci.org/hugobastas/elm-string-template)
-Put values in your strings, this is a more readable alternative to string concatenation.
+Put values into template strings. Avoid unreadable string concatenation.
 
 ```elm
 import String.Template
 
 
--- Can be hard to understand
-greet1 : { name : String, notifications : Int } -> String
-greet1 { name, notifications } =
-    "Hey " ++ name ++ ". You have " ++ String.fromInt notifications ++ " new notifications."
+-- String concatenation, hard do understand ://
+greet1 : User -> String
+greet1 user =
+    "Hey " ++ user.name ++ ". You have " ++ String.fromInt user.notifications ++ " new notifications."
 
 
--- Easier to understand
-greet2 : { name : String, notifications : Int } -> String
-greet2 { name, notifications } =
+-- With this package, easier to get an overview of what's happening
+greet2 : User -> String
+greet2 user =
     "Hey ${name}. You have ${notifications} new notifications."
         |> String.Template.inject
-            [ ( "name", name )
-            , ( "notifications", String.fromInt notifications )
+            [ ( "name", user.name )
+            , ( "notifications", String.fromInt user.notifications )
             ]
 ```
 
@@ -36,7 +36,7 @@ readable than normal concatenation it is not as safe. For instance, if your temp
 ```
 
 Be mindful of this!
-[review-string-template](https://package.elm-lang.org/packages/hugobastas/review-string-template/latest)
+[review-string-template](https://package.elm-lang.org/packages/emmabastas/review-string-template/latest)
 together with [elm-review](https://github.com/jfmengels/elm-review)
 ensures that you wont have any problems like that. It might be worth checking it out!
 
@@ -63,6 +63,6 @@ the risk of typos etc. Everything else is just personal preference imo!
 * [elm-string-interpolate](https://package.elm-lang.org/packages/lukewestby/elm-string-interpolate/latest/) 
 has no way to give the placeholders in your tamplete descriptive names.
 Your template would look like this: `"Hello {0} {1}!"` instead of:
-`"Hello ${firstName} ${lastName}!"`. I haven't benchmarked, but `elm-string-interpolate` is probably more performant however.
+`"Hello ${firstName} ${lastName}!"`.
 
 * Good ol' string concatenation! It's safer and more performant.
