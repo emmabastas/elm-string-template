@@ -1,6 +1,6 @@
 {
     "type": "package",
-    "name": "hugobastas/elm-string-template",
+    "name": "emmabastas/elm-string-template",
     "summary": "Inject Elm values into a string template",
     "license": "MIT",
     "version": "1.0.0",
