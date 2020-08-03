@@ -43,7 +43,7 @@ identifiesPlaceholdersTests =
             , injectExpect = Expect.equal "\nx "
             , injectSafeExpect = Expect.equal (Ok "\nx ")
             }
-        , injectAndInjectSafeFuzz "Random characters that won't form a placeholder" <|
+        , injectAndInjectSafeFuzz "Surounded by random characters that won't form a placeholder" <|
             Fuzz.map2
                 (\pre post ->
                     { template = pre ++ "${}" ++ post
@@ -114,11 +114,17 @@ identifiesPlaceholderNamesTest =
 dealsWithMultiplePlaceholders : Test
 dealsWithMultiplePlaceholders =
     describe "Deals with multiple placeholders"
-        [ injectAndInjectSafeTest "Inject into multiple placeholders with same name" <|
-            { template = "${}${}"
-            , toInject = [ ( "", "foo" ) ]
-            , injectExpect = Expect.equal "foofoo"
-            , injectSafeExpect = Expect.equal (Ok "foofoo")
+        [ injectAndInjectSafeTest "Inject into two placeholders with same name" <|
+            { template = "${foo}${foo}"
+            , toInject = [ ( "foo", "bar" ) ]
+            , injectExpect = Expect.equal "barbar"
+            , injectSafeExpect = Expect.equal (Ok "barbar")
+            }
+        , injectAndInjectSafeTest "Inject into two placeholders with different names" <|
+            { template = "${foo}${bar}"
+            , toInject = [ ( "foo", "foobar" ), ( "bar", "baz" ) ]
+            , injectExpect = Expect.equal "foobarbaz"
+            , injectSafeExpect = Expect.equal (Ok "foobarbaz")
             }
         , dealsWithMultipleUniquePlaceholders
         ]
