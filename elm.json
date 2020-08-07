@@ -1,7 +1,7 @@
 {
     "type": "package",
     "name": "emmabastas/elm-string-template",
-    "summary": "Inject Elm values into a string template",
+    "summary": "Put values into a template string. Avoid unreadable string concatenation.",
     "license": "MIT",
     "version": "1.0.0",
     "exposed-modules": [
