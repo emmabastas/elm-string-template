@@ -1,5 +1,5 @@
 # String.Template [![Build Status](https://travis-ci.org/emmabastas/elm-string-template.svg?branch=master)](https://travis-ci.org/emmabastas/elm-string-template)
-Put values into template strings. Avoid unreadable string concatenation.
+Put values into a template string. Avoid unreadable string concatenation.
 
 ```elm
 import String.Template
@@ -25,7 +25,7 @@ greet2 user =
 ## Caveats
 
 While a function like `String.Template.inject` can make code more
-readable than normal concatenation it is not as safe. For instance, if your template or keys happen to have a typo in them you won't get any help from the compiler!
+readable than normal concatenation it is not as safe. For instance, if your template or a key happen to have a typo in them you won't get any help from the compiler!
 
 ```elm
 "Hello ${naem}!"
@@ -36,29 +36,26 @@ readable than normal concatenation it is not as safe. For instance, if your temp
 ```
 
 Be mindful of this!
-[review-string-template](https://package.elm-lang.org/packages/emmabastas/review-string-template/latest)
-together with [elm-review](https://github.com/jfmengels/elm-review)
-ensures that you wont have any problems like that. It might be worth checking it out!
+
+Im working on [review-string-template](https://package.elm-lang.org/packages/emmabastas/review-string-template/latest) 
+which together with [elm-review](https://github.com/jfmengels/elm-review)
+ensures that you wont have any problems like that. It might be worth checking it out later!
 
 If you come from a language like JavaScript with first-class template literals
 you might be frustrated that Elm lacks this and want to emulate it with this package.
 That might not be worth the trouble! If the strings are small then normal
 concatenation isn't that bad.
-Elm's aproach is always to __Make things right, Not right now.__
+And remember: Elm's aproach is always to __Make things right, Not right now.__
 
 
 ## Alternatives
 
 There's already two packages availible to inject values into strings.
-It's up to you to decide which package to pick (and if you need one in the
-first place).
-But here is why I chose to make my own package instead of using one of the other
-two:
+It's up to you to decide which package to pick (and if you need one in the first place).
+Here's the pros/cons according to me:
 
 * [elm-string-format](https://package.elm-lang.org/packages/jorgengranseth/elm-string-format/latest/)
-is pretty nice, it has named placeholders.
-The only thing it doesn't have is an `elm-review` rule removing
-the risk of typos etc. Everything else is just personal preference imo!
+Currently i think it all commes down to personal preference. `elm-string-template` has the potential to be faster than `elm-string-format`, but that has to be benchmarked and it probbably doesn't matter anyways! In the future there will be an [elm-review](https://github.com/jfmengels/elm-review) rule to check for typos in the placeholders etc. _In the future_, that might be a reason to use `elm-string-template`.
 
 * [elm-string-interpolate](https://package.elm-lang.org/packages/lukewestby/elm-string-interpolate/latest/) 
 has no way to give the placeholders in your tamplete descriptive names.
