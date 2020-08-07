@@ -15,13 +15,13 @@ import Regex exposing (Regex)
 
 {-| Inject values into a template string with the given key-value pairs.
 
-    "Good day ${title} ${lastName}!"
+    "Merry Christmas, ${title}. ${lastName}"
         |> String.Template.inject
-            [ ( "title", "dr." )
-            , ( "lastName", "Who" )
+            [ ( "title", "Mr" )
+            , ( "lastName", "Lawrence" )
             ]
 
-    -- "Good day dr. Who!"
+    -- Merry Christmas, Mr. Lawrence
 
 -}
 inject : List ( String, String ) -> String -> String
