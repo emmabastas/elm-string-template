@@ -11,6 +11,8 @@ all =
     concat
         [ validPlaceholdersUnitTests
         , validPlaceholdersFuzzTest
+        , withoutAssociatedValueFuzzTest
+        , missingClosingBracketTest
         ]
 
 
@@ -49,15 +51,32 @@ validPlaceholdersUnitTests =
                             |> Expect.equal expect
                     )
             )
-        |> Test.describe "Valid placeholders unit tests"
+        |> Test.describe "Valid placeholder unit tests"
 
 
 validPlaceholdersFuzzTest : Test
 validPlaceholdersFuzzTest =
-    Test.fuzz placeholderFuzzer "Valid placeholders fuzz test" <|
+    Test.fuzz placeholderFuzzer "Valid placeholder fuzz test" <|
         \{ placeholder, name } ->
             inject [ ( name, "foo" ) ] placeholder
                 |> Expect.equal "foo"
+
+
+withoutAssociatedValueFuzzTest : Test
+withoutAssociatedValueFuzzTest =
+    Test.fuzz placeholderFuzzer "Valid placeholder without associated value fuzz test" <|
+        \{ placeholder } ->
+            inject [] placeholder
+                |> Expect.equal placeholder
+
+
+missingClosingBracketTest : Test
+missingClosingBracketTest =
+    Test.test "`${` without closing `}` does not form a placeholder" <|
+        \_ ->
+            "${foo"
+                |> inject [ ( "foo", "bar" ) ]
+                |> Expect.equal "${foo"
 
 
 
