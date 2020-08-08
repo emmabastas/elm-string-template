@@ -14,6 +14,7 @@ all =
         , missingClosingBracketTest
         , withoutAssociatedValueFuzzTest
         , placeholderSuroundedByTextFuzzTest
+        , placeholdersSuroundedByTextFuzzTest
         ]
 
 
@@ -90,6 +91,78 @@ placeholderSuroundedByTextFuzzTest =
             (leadingText ++ placeholder ++ trailingText)
                 |> inject [ ( name, "foo" ) ]
                 |> Expect.equal (leadingText ++ "foo" ++ trailingText)
+
+
+placeholdersSuroundedByTextFuzzTest : Test
+placeholdersSuroundedByTextFuzzTest =
+    let
+        fuzzer :
+            Fuzzer
+                (List
+                    { placeholder : String
+                    , name : String
+                    , leadingText : String
+                    , trailingText : String
+                    }
+                )
+        fuzzer =
+            Fuzz.list placeholderSuroundedByTextFuzzer
+                |> Fuzz.map
+                    (List.map
+                        (\e -> { e | leadingText = "_" ++ e.leadingText })
+                    )
+    in
+    fuzz fuzzer "Placeholders surounded by text" <|
+        \segments ->
+            let
+                segmentsPrefixed :
+                    List
+                        { name : String
+                        , leadingText : String
+                        , trailingText : String
+                        }
+                segmentsPrefixed =
+                    List.indexedMap
+                        (\i { name, leadingText, trailingText } ->
+                            { name =
+                                String.padLeft
+                                    (List.length segments // 10 + 1)
+                                    '0'
+                                    (String.fromInt i)
+                                    ++ name
+                            , leadingText = leadingText
+                            , trailingText = trailingText
+                            }
+                        )
+                        segments
+
+                template : String
+                template =
+                    List.map
+                        (\{ name, leadingText, trailingText } ->
+                            leadingText ++ "${" ++ name ++ "}" ++ trailingText
+                        )
+                        segmentsPrefixed
+                        |> String.concat
+
+                expect : String
+                expect =
+                    List.indexedMap
+                        (\i { leadingText, trailingText } ->
+                            leadingText ++ String.fromInt i ++ trailingText
+                        )
+                        segmentsPrefixed
+                        |> String.concat
+
+                toInject : List ( String, String )
+                toInject =
+                    List.indexedMap
+                        (\i { name } -> ( name, String.fromInt i ))
+                        segmentsPrefixed
+            in
+            template
+                |> inject toInject
+                |> Expect.equal expect
 
 
 
