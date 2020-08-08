@@ -6,7 +6,7 @@ module String.Template exposing (inject)
 
 -}
 
-import Dict
+import Dict exposing (Dict)
 import Regex exposing (Regex)
 
 
@@ -24,8 +24,14 @@ import Regex exposing (Regex)
 inject : List ( String, String ) -> String -> String
 inject substitutions template =
     let
+        dict : Dict String String
         dict =
             Dict.fromList substitutions
+
+        regex : Regex
+        regex =
+            Regex.fromString "\\${[^}]*}"
+                |> Maybe.withDefault Regex.never
     in
     template
         |> Regex.replace regex
@@ -37,12 +43,6 @@ inject substitutions template =
                 Dict.get placeholderName dict
                     |> Maybe.withDefault match
             )
-
-
-regex : Regex
-regex =
-    Regex.fromString "\\${[^}]*}"
-        |> Maybe.withDefault Regex.never
 
 
 placeholderNameFromPlaceholder : String -> String
