@@ -207,4 +207,3 @@ textFuzzer : Fuzzer String
 textFuzzer =
     Fuzz.string
         |> Fuzz.map (String.replace "${" "")
-

@@ -45,4 +45,3 @@ inject substitutions template =
                 Dict.get placeholderName dict
                     |> Maybe.withDefault match
             )
-
