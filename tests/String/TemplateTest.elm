@@ -11,72 +11,73 @@ all =
     concat
         [ validPlaceholdersUnitTests
         , validPlaceholdersFuzzTest
-        , withoutAssociatedValueFuzzTest
         , missingClosingBracketTest
+        , withoutAssociatedValueFuzzTest
         ]
 
 
 validPlaceholdersUnitTests : Test
 validPlaceholdersUnitTests =
-    [ { template = "${}"
-      , toInject = [ ( "", "x" ) ]
-      , expect = "x"
-      }
-    , { template = "${foo}"
-      , toInject = [ ( "foo", "bar" ) ]
-      , expect = "bar"
-      }
-    , { template = "${ foo }"
-      , toInject = [ ( " foo ", "bar" ) ]
-      , expect = "bar"
-      }
-    , { template = "${${}"
-      , toInject = [ ( "${", "foo" ) ]
-      , expect = "foo"
-      }
-    , { template = "$${foo}}"
-      , toInject = [ ( "foo", "bar" ) ]
-      , expect = "$bar}"
-      }
-    , { template = "${identity}"
-      , toInject = [ ( "identity", "${identity}" ) ]
-      , expect = "${identity}"
-      }
-    ]
-        |> List.map
-            (\{ template, toInject, expect } ->
-                Test.test template
-                    (\_ ->
-                        inject toInject template
-                            |> Expect.equal expect
-                    )
-            )
-        |> Test.describe "Valid placeholder unit tests"
+    describe "Valid placeholder unit tests"
+        ([ { template = "${}"
+           , toInject = [ ( "", "x" ) ]
+           , expect = "x"
+           }
+         , { template = "${foo}"
+           , toInject = [ ( "foo", "bar" ) ]
+           , expect = "bar"
+           }
+         , { template = "${ foo }"
+           , toInject = [ ( " foo ", "bar" ) ]
+           , expect = "bar"
+           }
+         , { template = "${${}"
+           , toInject = [ ( "${", "foo" ) ]
+           , expect = "foo"
+           }
+         , { template = "$${foo}}"
+           , toInject = [ ( "foo", "bar" ) ]
+           , expect = "$bar}"
+           }
+         , { template = "${identity}"
+           , toInject = [ ( "identity", "${identity}" ) ]
+           , expect = "${identity}"
+           }
+         ]
+            |> List.map
+                (\{ template, toInject, expect } ->
+                    test template
+                        (\_ ->
+                            inject toInject template
+                                |> Expect.equal expect
+                        )
+                )
+        )
 
 
 validPlaceholdersFuzzTest : Test
 validPlaceholdersFuzzTest =
-    Test.fuzz placeholderFuzzer "Valid placeholder fuzz test" <|
+    fuzz placeholderFuzzer "Valid placeholder fuzz test" <|
         \{ placeholder, name } ->
             inject [ ( name, "foo" ) ] placeholder
                 |> Expect.equal "foo"
 
 
-withoutAssociatedValueFuzzTest : Test
-withoutAssociatedValueFuzzTest =
-    Test.fuzz placeholderFuzzer "Valid placeholder without associated value fuzz test" <|
-        \{ placeholder } ->
-            inject [] placeholder
-                |> Expect.equal placeholder
-
-
 missingClosingBracketTest : Test
 missingClosingBracketTest =
-    Test.test "`${` without closing `}` does not form a placeholder" <|
+    test "`${` without closing `}` does not form a placeholder" <|
         \_ ->
             "${foo"
                 |> inject [ ( "foo", "bar" ) ]
                 |> Expect.equal "${foo"
+
+
+withoutAssociatedValueFuzzTest : Test
+withoutAssociatedValueFuzzTest =
+    fuzz placeholderFuzzer "Placeholder without associated value is ignored" <|
+        \{ placeholder } ->
+            inject [] placeholder
+                |> Expect.equal placeholder
 
 
 
