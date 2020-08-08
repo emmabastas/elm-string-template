@@ -50,12 +50,13 @@ And remember: Elm's aproach is always to __Make things right, Not right now.__
 
 ## Alternatives
 
-There's already two packages availible to inject values into strings.
-It's up to you to decide which package to pick (and if you need one in the first place).
-Here's the pros/cons according to me:
+There's already three packages availible to inject values into strings. It's up to you to decide which package to pick (and if you need one in the first place). Here's the pros/cons according to me:
 
 * [elm-string-format](https://package.elm-lang.org/packages/jorgengranseth/elm-string-format/latest/)
 Currently i think it all commes down to personal preference. `elm-string-template` has the potential to be faster than `elm-string-format`, but that has to be benchmarked and it probbably doesn't matter anyways! In the future there will be an [elm-review](https://github.com/jfmengels/elm-review) rule to check for typos in the placeholders etc. _In the future_, that might be a reason to use `elm-string-template`.
+
+* [elm-template](https://package.elm-lang.org/packages/lukewestby/elm-template/latest/)
+A different aproach to string templating, very cool! If you're concerned about typos messing with your strings then it's deffinetly worth checking this package out.
 
 * [elm-string-interpolate](https://package.elm-lang.org/packages/lukewestby/elm-string-interpolate/latest/) 
 has no way to give the placeholders in your tamplete descriptive names.
