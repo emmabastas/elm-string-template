@@ -13,6 +13,7 @@ all =
         , validPlaceholdersFuzzTest
         , missingClosingBracketTest
         , withoutAssociatedValueFuzzTest
+        , placeholderSuroundedByTextFuzzTest
         ]
 
 
@@ -80,8 +81,40 @@ withoutAssociatedValueFuzzTest =
                 |> Expect.equal placeholder
 
 
+placeholderSuroundedByTextFuzzTest : Test
+placeholderSuroundedByTextFuzzTest =
+    fuzz placeholderSuroundedByTextFuzzer
+        "Placeholder surounded by text fuzz test"
+    <|
+        \{ placeholder, name, leadingText, trailingText } ->
+            (leadingText ++ placeholder ++ trailingText)
+                |> inject [ ( name, "foo" ) ]
+                |> Expect.equal (leadingText ++ "foo" ++ trailingText)
+
+
 
 -- Fuzzers
+
+
+placeholderSuroundedByTextFuzzer :
+    Fuzzer
+        { placeholder : String
+        , name : String
+        , leadingText : String
+        , trailingText : String
+        }
+placeholderSuroundedByTextFuzzer =
+    Fuzz.map3
+        (\{ placeholder, name } leadingText trailingText ->
+            { placeholder = placeholder
+            , name = name
+            , leadingText = leadingText
+            , trailingText = trailingText
+            }
+        )
+        placeholderFuzzer
+        textFuzzer
+        textFuzzer
 
 
 placeholderFuzzer : Fuzzer { placeholder : String, name : String }
@@ -95,3 +128,26 @@ placeholderNameFuzzer : Fuzzer String
 placeholderNameFuzzer =
     Fuzz.string
         |> Fuzz.map (String.replace "}" "")
+
+
+textFuzzer : Fuzzer String
+textFuzzer =
+    Fuzz.string
+        |> Fuzz.map (replaceRecursive "${" "")
+
+
+
+-- helpers
+
+
+replaceRecursive : String -> String -> String -> String
+replaceRecursive target new string =
+    let
+        newString =
+            String.replace target new string
+    in
+    if newString == string then
+        newString
+
+    else
+        replaceRecursive target new newString
