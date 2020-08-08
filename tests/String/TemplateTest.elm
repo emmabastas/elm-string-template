@@ -206,21 +206,5 @@ placeholderNameFuzzer =
 textFuzzer : Fuzzer String
 textFuzzer =
     Fuzz.string
-        |> Fuzz.map (replaceRecursive "${" "")
+        |> Fuzz.map (String.replace "${" "")
 
-
-
--- helpers
-
-
-replaceRecursive : String -> String -> String -> String
-replaceRecursive target new string =
-    let
-        newString =
-            String.replace target new string
-    in
-    if newString == string then
-        newString
-
-    else
-        replaceRecursive target new newString
