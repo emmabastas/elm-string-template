@@ -12,7 +12,7 @@
 >
 > I think there's great value in using a solution already in [elm/core](https://package.elm-lang.org/packages/elm/core/latest) and I don't think the benefit of using `elm-string-template` outweighs the costs of having yet another way to do string interpolation. [This commic](https://xkcd.com/927/) commes to mind.
 >
-> This code will remain here, if it turns out that there is value in having this package then it's just to publish! I you have an opinion regarding `elm-string-template` or just string interpolation in Elm in general I'd be happy do discuss! @emmabastas in the Elm slack.
+> This code will remain here, if it turns out that there is value in having this package then it's just to publish! If you have an opinion regarding `elm-string-template` or just string interpolation in Elm in general I'd be happy do discuss! @emmabastas in the Elm slack.
 >
 > Thanks to [ryannhg](https://github.com/RyanNHG) for letting me know about the `String.replace` approach, [jfmengels](https://github.com/jfmengels/) for help/feedback on developing an `elm-review` rule for `elm-string-template` and thanks to a lot of other folks in the Elm slack for giving me precious feedback!
 
