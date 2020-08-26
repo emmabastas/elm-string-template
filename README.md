@@ -9,6 +9,7 @@
 >
 > -- Merry Christmas, Mr. Lawrence
 > ```
+> __Note__ This can behave in unexpected ways. If for example a user can pick their own title and sets it to be `"${lastName}"` then the final string would become `Merry Christmas, Lawrence. Lawrence"`, not `Merry Christmas, ${title}. Lawrence"`!
 >
 > I think there's great value in using a solution already in [elm/core](https://package.elm-lang.org/packages/elm/core/latest) and I don't think the benefit of using `elm-string-template` outweighs the costs of having yet another way to do string interpolation. [This commic](https://xkcd.com/927/) commes to mind.
 >
